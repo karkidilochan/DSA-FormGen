@@ -1,10 +1,11 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin, ImportExportActionModelAdmin
+
 from .models import Dsaform, Subject, Teacher_name, Subject_name
 from django.http import HttpResponse
 from .createdoc import create_doc
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
-
 
 admin.site.unregister(User)
 admin.site.unregister(Group)
@@ -19,8 +20,7 @@ class SubjectInline(admin.TabularInline):
 
 
 @admin.register(Dsaform)
-class DsaformAdmin(admin.ModelAdmin):
-
+class DsaformAdmin(ImportExportActionModelAdmin):
     inlines = [SubjectInline]
     actions = ["download_dsaform"]
 
@@ -132,11 +132,10 @@ class DsaformAdmin(admin.ModelAdmin):
             # dsaf = Dsauser(userfile_name=dsa.teacher_name.lower(), user_file=File(file))
             # dsa.save()
 
-
-
             # sending response
             response = HttpResponse(document,
                                     content_type='application/force-download')
             response['Content-Disposition'] = 'attachment; filename="dsaform.docx"'
             return response
+
 
